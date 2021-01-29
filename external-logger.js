@@ -57,19 +57,22 @@ export default class ExternalLogger {
     if (!endpointLoggingFields || !this._hasViewerEndpointLogging()) { return; }
 
     const { event_details, version } = message.data.data;
-    const { severity, eventApp, errorCode, debugInfo } = endpointLoggingFields;
+    const { severity, errorCode } = endpointLoggingFields;
+    const idObj = {component_id: this.componentId};
 
-    if (!event_details || !severity || !eventApp) {
+    if (!event_details || !severity) {
       return console.error ("invalid endpoint logging attempt");
     }
 
+    const debugInfo = endpointLoggingFields.debugInfo ? Object.assign({}, endpointLoggingFields.debugInfo, idObj) : idObj;
+
     window.top.RiseVision.Viewer.Logger.logTemplateEvent({
       severity,
-      eventApp,
+      eventApp: this.componentName,
       eventAppVersion: version,
       eventDetails: event_details || null,
       eventErrorCode: errorCode || null,
-      debugInfo: debugInfo || null,
+      debugInfo: JSON.stringify( debugInfo )
     });
   }
 
@@ -115,7 +118,6 @@ export default class ExternalLogger {
     const errorMessage = this._validateMessage(message, detail);
 
     if (!errorMessage && this.localMessaging.canConnect()) {
-
       this.localMessaging.broadcastMessage(message);
       this._logEndpointEvent(message, endpointLoggingFields);
     } else {

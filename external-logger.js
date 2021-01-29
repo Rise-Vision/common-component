@@ -53,7 +53,61 @@ export default class ExternalLogger {
       };
   }
 
-  log(evt, detail) {
+  _logEndpointEvent(message, endpointLoggingFields) {
+    if (!endpointLoggingFields || !this._hasViewerEndpointLogging()) { return; }
+
+    const { event_details, version } = message.data.data;
+    const { severity, eventApp, errorCode, debugInfo } = endpointLoggingFields;
+
+    if (!event_details || !severity || !eventApp) {
+      return console.error ("invalid endpoint logging attempt");
+    }
+
+    window.top.RiseVision.Viewer.Logger.logTemplateEvent({
+      severity,
+      eventApp,
+      eventAppVersion: version,
+      eventDetails: event_details || null,
+      eventErrorCode: errorCode || null,
+      debugInfo: debugInfo || null,
+    });
+  }
+
+  _hasViewerEndpointLogging() {
+    let hasIt = false;
+
+    try {
+      hasIt = window.top &&
+        window.top.RiseVision &&
+        window.top.RiseVision.Viewer &&
+        window.top.RiseVision.Viewer.Logger &&
+        window.top.RiseVision.Viewer.Logger.logTemplateEvent;
+    } catch(err) {
+      hasIt = false;
+      if (console.debug) {console.debug(err);}
+    }
+
+    return hasIt;
+  }
+
+  _hasViewerEndpointHeartbeats() {
+    let hasIt = false;
+
+    try {
+      hasIt = window.top &&
+        window.top.RiseVision &&
+        window.top.RiseVision.Viewer &&
+        window.top.RiseVision.Viewer.Logger &&
+        window.top.RiseVision.Viewer.Logger.recordUptimeHeartbeat;
+    } catch(err) {
+      hasIt = false;
+      if (console.debug) {console.debug(err);}
+    }
+
+    return hasIt;
+  }
+
+  log(evt, detail, endpointLoggingFields) {
     if (!this.localMessaging) { return; }
 
     const message = this._constructMessage(evt, detail);
@@ -61,7 +115,9 @@ export default class ExternalLogger {
     const errorMessage = this._validateMessage(message, detail);
 
     if (!errorMessage && this.localMessaging.canConnect()) {
+
       this.localMessaging.broadcastMessage(message);
+      this._logEndpointEvent(message, endpointLoggingFields);
     } else {
       console.log(`external-logger error - ${this.componentName + " component" || "source component undefined"}: ${errorMessage}`);
     }
@@ -73,5 +129,19 @@ export default class ExternalLogger {
 
   setCompanySettings(settings) {
     companySettings = settings;
+  }
+
+  startEndpointHeartbeats(eventApp, version) {
+    if (!this._hasViewerEndpointHeartbeats()) { return; }
+
+    var interval = window.top.RiseVision.Viewer.Logger.heartbeatInterval();
+    var heartbeatFn = window.top.RiseVision.Viewer.Logger.recordUptimeHeartbeat;
+    var boundHeartbeatFn = heartbeatFn.bind(null, {
+      eventApp: eventApp,
+      eventAppVersion: version
+    });
+
+    boundHeartbeatFn();
+    setInterval(boundHeartbeatFn, interval);
   }
 }

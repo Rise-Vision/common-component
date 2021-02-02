@@ -56,8 +56,6 @@ export default class ExternalLogger {
   _logEndpointEvent(message, endpointLoggingFields) {
     if (!endpointLoggingFields || !this._hasViewerEndpointLogging()) { return; }
 
-    console.log("common-component::_logEndpointEvent", message, endpointLoggingFields);
-
     const { event_details, version } = message.data.data;
     const { severity, eventApp, errorCode } = endpointLoggingFields;
     const idObj = {component_id: this.componentId};
@@ -114,8 +112,6 @@ export default class ExternalLogger {
 
   log(evt, detail, endpointLoggingFields) {
     if (!this.localMessaging) { return; }
-
-    console.log("common-component::log", evt, detail, endpointLoggingFields);
 
     const message = this._constructMessage(evt, detail);
 

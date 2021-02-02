@@ -59,7 +59,7 @@ export default class ExternalLogger {
     console.log("common-component::_logEndpointEvent", message, endpointLoggingFields);
 
     const { event_details, version } = message.data.data;
-    const { severity, errorCode } = endpointLoggingFields;
+    const { severity, eventApp, errorCode } = endpointLoggingFields;
     const idObj = {component_id: this.componentId};
 
     if (!event_details || !severity) {
@@ -70,7 +70,7 @@ export default class ExternalLogger {
 
     window.top.RiseVision.Viewer.Logger.logTemplateEvent({
       severity,
-      eventApp: this.componentName,
+      eventApp,
       eventAppVersion: version,
       eventDetails: event_details || null,
       eventErrorCode: errorCode || null,

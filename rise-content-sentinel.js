@@ -151,20 +151,35 @@ export default class RiseContentSentinel {
     }
   }
 
+  _getViewerWindow() {
+    let win = window;
+
+    while (win.parent && win.parent !== win) {
+      win = win.parent;
+
+      if ( win.RiseVision && win.RiseVision.Viewer ) {
+        break;
+      }
+    }
+
+    return win;
+  }
+
   _send(message) {
+    if (!message) {return;}
+
+    if ( window.parent === window ) {return;}
+
     const frameElementId = this._getHttpParameter( "frameElementId" ) ?
       this._getHttpParameter( "frameElementId" ) :
       window.frameElement ? window.frameElement.id : "";
 
-    message = message || {};
+    const viewerWindow = this._getViewerWindow();
+
     message.topic = "watch";
     message.frameElementId = frameElementId;
 
-    if ( window.parent === window ) {
-      return;
-    }
-
-    window.parent.postMessage( message, "*" );
+    viewerWindow && viewerWindow.postMessage( message, "*" );
   }
 
   _getWatchedFileStatus(filePath) {

@@ -5,28 +5,12 @@ export default class RiseContentSentinel {
     this.folders = new Set();
     this.fileTypes = ["image", "video"];
     this.fileType = "";
-    this.embeddedPresentations = [];
 
     this._bindReceiveMessagesHandler();
   }
 
   _bindReceiveMessagesHandler() {
     window.addEventListener( "message", this._receiveData, false );
-  }
-
-  _isAncestor( source ) {
-    const checkParent = parent => source === parent ||
-      ( parent.parent && parent !== parent.parent && checkParent( parent.parent ));
-
-    return window.parent && checkParent( window.parent );
-  }
-
-  _handleEmbeddedFileWatch( source, message ) {
-    if ( !this.embeddedPresentations.includes( source )) {
-      this.embeddedPresentations.push( source )
-    }
-
-    this._send( message );
   }
 
   _receiveData( event ) {
@@ -36,30 +20,10 @@ export default class RiseContentSentinel {
       return;
     }
 
-    const topic = message.topic.toUpperCase();
-
-    if ( topic === "WATCH" && !this._isAncestor( event.source )) {
-      this._handleEmbeddedFileWatch( event.source, message );
-    } else if ( topic === "FILE-UPDATE" || topic === "FILE-ERROR" ) {
-      this._handleFileResponse( message );
-    }
+    this._handleMessage( message );
   }
 
-  _handleFileResponse(message) {
-    this._handleMessage(message);
-
-    this.embeddedPresentations.forEach( source => {
-      try {
-        source.postMessage( message, "*" );
-      } catch ( error ) {
-        console.warn( error );
-      }
-    });
-  }
-
-  _handleMessage(message) {
-    if (!message || !message.topic) {return;}
-
+  _handleMessage( message ) {
     switch (message.topic.toUpperCase()) {
       case "FILE-UPDATE":
         return this._handleFileUpdate( message );

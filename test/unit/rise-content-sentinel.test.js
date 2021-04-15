@@ -33,7 +33,6 @@ describe("RiseContentSentinel", () => {
 
       it("should not execute if 'message' does not contain required props", () => {
         const message = {
-          "from": "storage-module",
           "topic": "file-update"
         };
 
@@ -55,7 +54,6 @@ describe("RiseContentSentinel", () => {
 
       it("should not execute if message pertains to a file not being watched", () => {
         const message = {
-          "from": "storage-module",
           "topic": "file-update",
           "filePath": "non-watched-file.png",
           "status": "stale"

@@ -10,7 +10,7 @@ export default class RiseContentSentinel {
   }
 
   _bindReceiveMessagesHandler() {
-    window.addEventListener( "message", this._receiveData, false );
+    window.addEventListener( "message", event => this._receiveData( event ) );
   }
 
   _receiveData( event ) {

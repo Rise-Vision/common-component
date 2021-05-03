@@ -80,7 +80,7 @@ describe("RiseContentSentinel", () => {
         });
       });
 
-      it("should use filePath to form the fileUrl if cacheKey is imissing", () => {
+      it("should use filePath to form the fileUrl if cacheKey is missing", () => {
         const message = {
           "topic": "file-update",
           "filePath": "test file.png",

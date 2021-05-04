@@ -67,7 +67,7 @@ describe("RiseContentSentinel", () => {
         const message = {
           "topic": "file-update",
           "filePath": "test file.png",
-          "cachePath": "test%20file.png",
+          "cachePath": "/test%20file.png",
           "status": "current"
         };
 
@@ -76,7 +76,7 @@ describe("RiseContentSentinel", () => {
         expect(eventHandler).toHaveBeenCalledWith({
           event: "file-available",
           filePath: message.filePath,
-          fileUrl: `${origin}/${message.cachePath}`
+          fileUrl: `${origin}${message.cachePath}`
         });
       });
 

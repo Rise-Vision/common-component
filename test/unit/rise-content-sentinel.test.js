@@ -67,7 +67,7 @@ describe("RiseContentSentinel", () => {
         const message = {
           "topic": "file-update",
           "filePath": "test file.png",
-          "cacheKey": "test%20file.png",
+          "cachePath": "test%20file.png",
           "status": "current"
         };
 
@@ -76,11 +76,11 @@ describe("RiseContentSentinel", () => {
         expect(eventHandler).toHaveBeenCalledWith({
           event: "file-available",
           filePath: message.filePath,
-          fileUrl: `${origin}/${message.cacheKey}`
+          fileUrl: `${origin}/${message.cachePath}`
         });
       });
 
-      it("should use filePath to form the fileUrl if cacheKey is missing", () => {
+      it("should use filePath to form the fileUrl if cachePath is missing", () => {
         const message = {
           "topic": "file-update",
           "filePath": "test file.png",

@@ -35,9 +35,9 @@ export default class RiseContentSentinel {
   _handleFileUpdate(message) {
     if ( !message || !message.filePath || !message.status ) {return;}
 
-    const {filePath, cacheKey, status} = message;
+    const {filePath, cachePath, status} = message;
     const origin = "https://widgets.risevision.com";
-    const fileUrl = `${origin}/${cacheKey || filePath}`;
+    const fileUrl = `${origin}/${cachePath || filePath}`;
     const watchedFileStatus = this._getWatchedFileStatus(filePath);
     const isFolderPath = this._isFolderPath(filePath);
 

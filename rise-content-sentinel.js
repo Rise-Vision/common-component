@@ -37,7 +37,9 @@ export default class RiseContentSentinel {
 
     const {filePath, cachePath, status} = message;
     const origin = "https://widgets.risevision.com";
-    const fileUrl = `${origin}${cachePath || "/" + filePath}`;
+    //use cachePath to form the fileUrl. Fall back to filePath for
+    //backwards compartibility with Content Sentinel v1.2.7
+    const fileUrl = `${origin}${cachePath || `/${filePath}`}`;
     const watchedFileStatus = this._getWatchedFileStatus(filePath);
     const isFolderPath = this._isFolderPath(filePath);
 

@@ -66,11 +66,28 @@ describe("RiseContentSentinel", () => {
       it("should execute 'file-available' event on event handler when message status is CURRENT", () => {
         const message = {
           "topic": "file-update",
-          "filePath": "test.png",
+          "filePath": "test file.png",
+          "cachePath": "/test%20file.png",
           "status": "current"
         };
 
-        riseContentSentinel.watchFiles("test.png");
+        riseContentSentinel.watchFiles("test file.png");
+        riseContentSentinel._handleMessage(message);
+        expect(eventHandler).toHaveBeenCalledWith({
+          event: "file-available",
+          filePath: message.filePath,
+          fileUrl: `${origin}${message.cachePath}`
+        });
+      });
+
+      it("should use filePath to form the fileUrl if cachePath is missing", () => {
+        const message = {
+          "topic": "file-update",
+          "filePath": "test file.png",
+          "status": "current"
+        };
+
+        riseContentSentinel.watchFiles("test file.png");
         riseContentSentinel._handleMessage(message);
         expect(eventHandler).toHaveBeenCalledWith({
           event: "file-available",

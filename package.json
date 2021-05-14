@@ -1,6 +1,6 @@
 {
   "name": "common-component",
-  "version": "1.18.1",
+  "version": "1.19.0",
   "description": "Common code for new rise components",
   "main": "index.js",
   "scripts": {

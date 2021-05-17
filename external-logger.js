@@ -111,14 +111,11 @@ export default class ExternalLogger {
   }
 
   log(evt, detail, endpointLoggingFields) {
-    if (!this.localMessaging) { return; }
-
     const message = this._constructMessage(evt, detail);
 
     const errorMessage = this._validateMessage(message, detail);
 
-    if (!errorMessage && this.localMessaging.canConnect()) {
-      this.localMessaging.broadcastMessage(message);
+    if (!errorMessage) {
       this._logEndpointEvent(message, endpointLoggingFields);
     } else {
       console.log(`external-logger error - ${this.componentName + " component" || "source component undefined"}: ${errorMessage}`);

@@ -155,17 +155,16 @@ export default class RiseContentSentinel {
 
   _getTopLevelViewerWindow() {
     let win = window;
-    let found = win;
 
     while (win.parent && win.parent !== win) {
       win = win.parent;
 
       if ( win.contentSentinelInitializer === true ) {
-        found = win;
+        break;
       }
     }
 
-    return found;
+    return win;
   }
 
   _send(message) {

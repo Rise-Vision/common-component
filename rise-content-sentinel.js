@@ -160,7 +160,7 @@ export default class RiseContentSentinel {
     while (win.parent && win.parent !== win) {
       win = win.parent;
 
-      if ( win.RiseVision && win.RiseVision.Viewer ) {
+      if ( win.contentSentinelInitializer === true ) {
         found = win;
       }
     }

@@ -159,7 +159,7 @@ export default class RiseContentSentinel {
     while (win.parent && win.parent !== win) {
       win = win.parent;
 
-      if ( win.contentSentinelInitializer === true ) {
+      if (win.contentSentinelInitializer) {
         break;
       }
     }

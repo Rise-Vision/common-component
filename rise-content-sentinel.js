@@ -153,13 +153,13 @@ export default class RiseContentSentinel {
     }
   }
 
-  _getViewerWindow() {
+  _getTopLevelViewerWindow() {
     let win = window;
 
     while (win.parent && win.parent !== win) {
       win = win.parent;
 
-      if ( win.RiseVision && win.RiseVision.Viewer ) {
+      if (win.contentSentinelInitializer) {
         break;
       }
     }
@@ -176,7 +176,7 @@ export default class RiseContentSentinel {
       this._getHttpParameter( "frameElementId" ) :
       window.frameElement ? window.frameElement.id : "";
 
-    const viewerWindow = this._getViewerWindow();
+    const viewerWindow = this._getTopLevelViewerWindow();
 
     message.topic = "watch";
     message.frameElementId = frameElementId;

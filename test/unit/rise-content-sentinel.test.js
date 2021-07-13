@@ -569,4 +569,49 @@ describe("RiseContentSentinel", () => {
     });
   });
 
+  describe("_getTopLevelViewerWindow()", () => {
+    let windowSpy;
+
+    beforeEach(() => {
+      windowSpy = jest.spyOn(window, "window", "get");
+    });
+
+    afterEach(() => {
+      windowSpy.mockRestore();
+    });
+
+    it("should find the top level viewer window", () => {
+      const viewer = {
+        contentSentinelInitializer: true,
+        parent: {}
+      };
+      windowSpy.mockImplementation(() => ({
+        parent: {
+          parent: {
+            parent: viewer
+          }
+        }
+      }));
+
+      const top = riseContentSentinel._getTopLevelViewerWindow();
+
+      expect(top).toEqual(viewer);
+    });
+
+    it("should return top level if flag was not found", () => {
+      const viewer = {};
+      windowSpy.mockImplementation(() => ({
+        parent: {
+          parent: {
+            parent: viewer
+          }
+        }
+      }));
+
+      const top = riseContentSentinel._getTopLevelViewerWindow();
+
+      expect(top).toEqual(viewer);
+    });
+  });
+
 });
